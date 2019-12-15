@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>演示文档</title>
+    <style type="text/css">
+    	*{
+            padding: 0;
+            margin: 0 auto;
+        }
+        ul,li{
+            list-style: none;
+            text-align: center;
+        }
+        .box{
+            width: 1200px;
+            height: 382px;
+            border: 1px solid red;
+            margin: 100px auto;
+            position: relative;
+            overflow: hidden;
+        }
+        .slider{
+            width: 8400px;
+            position: absolute;
+            left: -1200px;
+        }
+        .slide{
+            width: 1200px;
+            overflow: hidden;
+            float: left;
+        }
+        .box>span{
+            display: block;
+            width: 30px;
+            height: 50px;
+            text-align: center;
+            cursor: pointer;
+            color: white;
+            top: 175px;
+            line-height: 50px;
+            background: rgb(255,0,0);
+            font-size: 30px;
+            position: absolute;
+            opacity: 0;
+        }
+        #left{
+            left: 30px;
+        }
+        #right{
+            right: 30px;
+        }
+        .nav{
+            position: absolute;
+            left: 500px;
+            bottom: 20px;
+        }
+        .nav>li{
+            float: left;
+            width: 20px;
+            height: 20px;
+            background: #ccc;
+            cursor: pointer;
+            margin: 0 10px;
+            border-radius: 50%;
+        }
+        .nav .active{
+            background: red;
+            color: white;
+        }
+        #top{
+        height: 20px;
+        margin: 0 auto;
+        overflow: hidden;
+        background: #ccc;
+        position: relative;
+        }
+        .tip{
+        overflow: hidden;
+        float: left;
+        position: absolute;
+        }
+        #tip1{
+        width: 500px;
+        height: 20px;
+        background-color: #ccc;
+        z-index: 1;
+        }
+        #tip1>img{
+        position: absolute;
+        top: 1.5px;
+        right: 0px;
+        z-index: 2;
+        }
+        #tip2{
+        line-height: 20px;
+        font-size: 12px;
+        color: red;
+        }
+        #tip3{
+        width: 500px;
+        height: 20px;   
+        right: 0px;
+        background-color: #ccc;
+        z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div id="top">
+        <div class="tip" id="tip1"><img src="imgs/a15.png"></div>
+        <div class="tip" id="tip2"><span>[温馨提示]最近有不少不法分子在网上骗人，请大家注意安全！！！</span></div>
+        <div class="tip" id="tip3"></div>
+    </div>
+    <div class="box" id="box">
+        <div class="slider" id="slider">
+            <div class="slide"><img src="imgs/b5.png" alt=""></div>
+            <div class="slide"><img src="imgs/b1.png" alt=""></div>
+            <div class="slide"><img src="imgs/b2.png" alt=""></div>
+            <div class="slide"><img src="imgs/b3.png" alt=""></div>
+            <div class="slide"><img src="imgs/b4.png" alt=""></div>
+            <div class="slide"><img src="imgs/b5.png" alt=""></div>
+            <div class="slide"><img src="imgs/b1.png" alt=""></div>
+        </div>
+    <span id="left"><</span>
+    <span id="right">></span>
+    <ul class="nav" id="nav">
+        <li class="active">1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+    </ul>
+</div>
+<script src="./animate.js""></script>
+<script>
+    var oNavlist = document.getElementById("nav").children;
+    var slider = document.getElementById("slider");
+    var left = document.getElementById("left");
+    var right = document.getElementById("right");
+    var tips = document.getElementById("tip2");
+    var index =1;
+    var timer;
+    var isMoving =false;
+    var tipsleft= parseInt(getStyle(tips,"left"));  
+        function carousel(){
+            var timer1 = setInterval(function(){
+                tipsleft = tipsleft-1;
+                tips.style.left = tipsleft+"px";
+                if(tipsleft <= 500-356){
+                    tipsleft = 1500;
+                }
+            },10)
+        }
+        carousel();
+    function next(){
+        if(isMoving == false){
+            isMoving = true;
+        index++;
+        navChange();
+        animate(slider,{left:-1200*index},function(){
+            if(index == 6){
+                slider.style.left = "-1200px";
+                index = 1;
+            }
+            isMoving = false;
+        });
+    }
+}
+    function prev(){
+        if(isMoving == false){
+            isMoving = true;
+        index--;
+        navChange();
+        animate(slider,{left:-1200*index},function(){
+            if(index == 0){
+                slider.style.left = "-6000px";
+                index = 5;
+            }
+            isMoving = false;
+        });
+    }
+}
+    var timer = setInterval (next,2000);
+    box.onmouseover =function(){
+        animate(left,{opacity:50});
+        animate(right,{opacity:50});
+        clearInterval(timer);
+    }
+    box.onmouseout =function(){
+        animate(left,{opacity:0});
+        animate(right,{opacity:0});
+        timer = setInterval(next,2000);
+    }
+    right.onclick =next;
+    left.onclick = prev;
+    for (var i = 0; i < oNavlist.length ; i++) {
+        oNavlist[i].idx = i;
+        oNavlist[i].onclick = function(){
+            index = this.idx+1;
+            navChange();
+            animate(slider,{left:-1200 * index })
+        }
+    }
+    function navChange(){
+        for (var i = 0; i < oNavlist.length ; i++) {
+            oNavlist[i].className = " ";
+        }
+        if(index === 6){
+            oNavlist[0].className = "active";
+        }
+        else if(index === 0){
+            oNavlist[4].className = "active";
+        }
+        else{
+            oNavlist[index-1].className = "active";
+        }
+    }
+
+
+</script>
+</body>
+</html>
